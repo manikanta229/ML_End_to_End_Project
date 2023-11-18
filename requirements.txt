@@ -1,0 +1,4 @@
+pandas
+numpy
+seaburn
+-e .## it helps to trigger setup file when we add new packages
