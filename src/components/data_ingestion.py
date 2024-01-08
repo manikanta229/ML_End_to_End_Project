@@ -4,8 +4,14 @@ from src.exception import CustomException
 from src.logger import logging
 import pandas as pd
 
+from src.components.data_transformation import DataTransformation
+from src.components.data_transformation import DataTransformationConfig
+
 from sklearn.model_selection import train_test_split
 from dataclasses import dataclass
+
+#from src.components.model_trainer import ModelTrainerConfig
+#from src.components.model_trainer import ModelTrainer
 
 #Decorators provide a clean and readable way to extend or modify the behavior of functions or classes. 
 #They are a powerful feature in Python often used in frameworks, libraries, and other advanced programming patterns.
@@ -24,6 +30,13 @@ class DataIngestion:
         logging.info("enter the data ingestion method or component")
         try:
             df = pd.read_csv('notebooks\data\StudentsPerformance.csv')
+            df= df.rename(columns={'parental level of education': 'parental_level_of_education',
+                   'test preparation course': 'test_preparation_course',
+                   'math score': 'math_score',
+                   'reading score': 'reading_score',
+                   'writing score': 'writing_score',
+                   'race/ethnicity':'race_ethnicity'},)
+
             logging.info('read the dataset as dataframe')
 
             os.makedirs(os.path.dirname(self.ingestion_config.train_data_path),exist_ok=True)
@@ -50,4 +63,10 @@ class DataIngestion:
 
 if __name__=="__main__":
     obj=DataIngestion()
-    obj.initiate_data_ingestion()
+    train_data,test_data=obj.initiate_data_ingestion()
+
+    data_transformation=DataTransformation()
+    data_transformation.initiate_data_transformation(train_data,test_data)
+
+    #modeltrainer=ModelTrainer()
+    #print(modeltrainer.initiate_model_trainer(train_arr,test_arr))
